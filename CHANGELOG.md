@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Price source overview: expandable table showing all listings used for price estimation (platform, title, price, link)
 - Option to skip price search during analysis (checkbox in upload form)
 - "Regenerate description" button per article in the editor (re-runs AI analysis)
 - "Refresh prices" button per article in the editor (re-runs price search)

@@ -316,6 +316,39 @@ header h1 {
     cursor: not-allowed;
 }
 
+.sources-list {
+    margin-top: 8px;
+}
+
+.sources-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.sources-table th,
+.sources-table td {
+    text-align: left;
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.sources-table th {
+    font-weight: 600;
+    color: var(--color-text-light);
+    font-size: 0.8rem;
+}
+
+.sources-table a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.sources-table a:hover {
+    text-decoration: underline;
+}
+
 .actions {
     display: flex;
     gap: 12px;

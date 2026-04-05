@@ -247,6 +247,12 @@ function renderArticles() {
                     (${formatPrice(article.price_estimate.min_price_cents)} - ${formatPrice(article.price_estimate.max_price_cents)})
                     | Konfidenz: ${article.price_estimate.confidence}
                     | ${article.price_estimate.source_count} Quellen
+                    ${article.price_estimate.sources && article.price_estimate.sources.length > 0
+                        ? `<button class="btn-small" onclick="toggleSources(${index})" style="margin-left:8px">Quellen anzeigen</button>`
+                        : ""}
+                </div>
+                <div id="sources-${index}" class="sources-list" hidden>
+                    ${renderSources(article.price_estimate.sources || [])}
                 </div>
             </div>
             <div class="form-group">
@@ -441,6 +447,35 @@ function resetApp() {
 }
 
 // -- Hilfsfunktionen --
+
+function toggleSources(index) {
+    const el = document.getElementById(`sources-${index}`);
+    el.hidden = !el.hidden;
+}
+
+function renderSources(sources) {
+    if (!sources || sources.length === 0) return "";
+    return `<table class="sources-table">
+        <thead>
+            <tr>
+                <th>Plattform</th>
+                <th>Titel</th>
+                <th>Preis</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${sources.map((s) => `
+                <tr>
+                    <td>${escapeHtml(s.platform)}</td>
+                    <td>${s.url
+                        ? `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.title)}</a>`
+                        : escapeHtml(s.title)}</td>
+                    <td>${formatPrice(s.price_cents)}</td>
+                </tr>
+            `).join("")}
+        </tbody>
+    </table>`;
+}
 
 function formatPrice(cents) {
     if (!cents || cents === 0) return "–";

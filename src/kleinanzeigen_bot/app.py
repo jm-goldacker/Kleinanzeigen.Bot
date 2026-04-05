@@ -137,27 +137,9 @@ async def analyze_images(
     )
 
     # 3. Preisschätzung (optional)
-    price_estimate_data = {
-        "suggested_price_cents": 0,
-        "min_price_cents": 0,
-        "max_price_cents": 0,
-        "confidence": "none",
-        "source_count": 0,
-    }
+    price_estimate_data = _empty_price_estimate()
     if skip_pricing.lower() != "true":
-        scraper = PriceScraper()
-        try:
-            price_sources = await scraper.search_prices(vision_result.search_keywords)
-        finally:
-            await scraper.close()
-        pe = estimate_price(price_sources)
-        price_estimate_data = {
-            "suggested_price_cents": pe.suggested_price_cents,
-            "min_price_cents": pe.min_price_cents,
-            "max_price_cents": pe.max_price_cents,
-            "confidence": pe.confidence,
-            "source_count": len(pe.sources),
-        }
+        price_estimate_data = await _run_price_search(vision_result.search_keywords)
 
     return JSONResponse({
         "upload_id": upload_id,
@@ -233,21 +215,8 @@ async def search_prices(data: dict) -> JSONResponse:  # type: ignore[type-arg]
     if not keywords:
         raise HTTPException(status_code=400, detail="Keine Suchbegriffe angegeben")
 
-    scraper = PriceScraper()
-    try:
-        price_sources = await scraper.search_prices(keywords)
-    finally:
-        await scraper.close()
-
-    pe = estimate_price(price_sources)
-
-    return JSONResponse({
-        "suggested_price_cents": pe.suggested_price_cents,
-        "min_price_cents": pe.min_price_cents,
-        "max_price_cents": pe.max_price_cents,
-        "confidence": pe.confidence,
-        "source_count": len(pe.sources),
-    })
+    result = await _run_price_search(keywords)
+    return JSONResponse(result)
 
 
 @app.post("/api/publish")
@@ -314,3 +283,42 @@ async def get_categories() -> JSONResponse:
     settings = _get_settings()
     mapper = CategoryMapper(settings.ollama_host, settings.ollama_model)
     return JSONResponse({"categories": mapper.get_all_categories()})
+
+
+def _empty_price_estimate() -> dict[str, object]:
+    """Leere Preisschätzung ohne Quellen."""
+    return {
+        "suggested_price_cents": 0,
+        "min_price_cents": 0,
+        "max_price_cents": 0,
+        "confidence": "none",
+        "source_count": 0,
+        "sources": [],
+    }
+
+
+async def _run_price_search(keywords: list[str]) -> dict[str, object]:
+    """Führe Preissuche durch und gib Ergebnis mit Quellen zurück."""
+    scraper = PriceScraper()
+    try:
+        price_sources = await scraper.search_prices(keywords)
+    finally:
+        await scraper.close()
+
+    pe = estimate_price(price_sources)
+    return {
+        "suggested_price_cents": pe.suggested_price_cents,
+        "min_price_cents": pe.min_price_cents,
+        "max_price_cents": pe.max_price_cents,
+        "confidence": pe.confidence,
+        "source_count": len(pe.sources),
+        "sources": [
+            {
+                "platform": s.platform,
+                "title": s.title,
+                "price_cents": s.price_cents,
+                "url": s.url,
+            }
+            for s in pe.sources
+        ],
+    }
