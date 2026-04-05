@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Price scraper uses fallback strategy: tries all keywords first, then progressively fewer keywords until enough results are found
 
 ### Added
+- LICENSE.md with GNU GPLv3
 - CI pipeline with GitHub Actions (lint, type check, tests on Python 3.12 & 3.13)
 - Model selection in the frontend: dropdown in the header to switch between Ollama models (e.g. qwen2.5, gemma3)
 - API endpoint `GET /api/models` to list all available Ollama models

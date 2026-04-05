@@ -124,3 +124,7 @@ src/kleinanzeigen_bot/
 ├── browser/            # Browser automation (Playwright)
 └── static/             # Web frontend (HTML/CSS/JS)
 ```
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE.md).
