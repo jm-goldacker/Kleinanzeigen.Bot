@@ -218,7 +218,7 @@ function renderArticles() {
             <h3>Artikel ${index + 1}</h3>
             <div class="article-images">
                 ${article.images.map((name) =>
-                    `<img src="#" alt="${name}" title="${name}">`
+                    `<img src="/api/uploads/${article.upload_id}/${encodeURIComponent(name)}" alt="${escapeHtml(name)}" title="${escapeHtml(name)}">`
                 ).join("")}
             </div>
             <div class="form-group">

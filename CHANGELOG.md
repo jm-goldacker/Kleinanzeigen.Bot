@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
+- Article images not displayed in the editor after AI analysis
 - Ruff linting errors: import sorting, line length violations, unused import
 - Outlier filter in price estimator not removing extreme values
 - Coverage configuration: exclude untestable modules (browser automation, app entry point)

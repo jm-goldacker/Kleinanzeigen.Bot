@@ -49,6 +49,15 @@ async def index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
 
+@app.get("/api/uploads/{upload_id}/{filename}")
+async def get_uploaded_image(upload_id: str, filename: str) -> FileResponse:
+    """Liefere ein hochgeladenes Bild aus."""
+    file_path = UPLOAD_DIR / upload_id / filename
+    if not file_path.exists() or not file_path.is_relative_to(UPLOAD_DIR):
+        raise HTTPException(status_code=404, detail="Bild nicht gefunden")
+    return FileResponse(file_path)
+
+
 @app.get("/api/health")
 async def health_check() -> JSONResponse:
     """Prüfe ob alle Dienste verfügbar sind."""
