@@ -136,7 +136,7 @@ class PriceScraper:
 
         prices: list[PriceSource] = []
         for result in results:
-            if isinstance(result, Exception):
+            if isinstance(result, BaseException):
                 logger.warning("Scraping-Fehler: %s", result)
             else:
                 prices.extend(result)

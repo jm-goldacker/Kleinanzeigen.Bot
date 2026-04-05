@@ -41,4 +41,4 @@ def load_settings() -> Settings:
     Raises:
         ValidationError: Wenn Pflichtfelder fehlen oder ungültig sind.
     """
-    return Settings()
+    return Settings()  # type: ignore[call-arg]

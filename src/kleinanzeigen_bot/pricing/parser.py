@@ -86,7 +86,7 @@ def parse_ebay_results(html: str) -> list[PriceSource]:
         if price_cents is None or price_cents == 0:
             continue
 
-        url = link_elem.get("href", "") if link_elem else ""
+        url = str(link_elem.get("href", "")) if link_elem else ""
 
         results.append(
             PriceSource(

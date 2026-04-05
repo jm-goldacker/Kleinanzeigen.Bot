@@ -3,6 +3,7 @@
 import json
 import logging
 from pathlib import Path
+from typing import Any
 
 from ollama import AsyncClient
 
@@ -12,6 +13,8 @@ from kleinanzeigen_bot.vision.prompts import CATEGORIZE_PROMPT_TEMPLATE
 logger = logging.getLogger(__name__)
 
 TREE_PATH = Path(__file__).parent / "tree.json"
+
+CategoryDict = dict[str, Any]
 
 
 class CategoryMapper:
@@ -26,7 +29,7 @@ class CategoryMapper:
         """
         self._client = AsyncClient(host=host)
         self._model = model
-        self._tree = _load_category_tree()
+        self._tree: dict[str, list[CategoryDict]] = _load_category_tree()
 
     async def map_category(self, item_description: str) -> CategoryInfo:
         """Ordne einen Gegenstand einer Kategorie zu.
@@ -44,10 +47,7 @@ class CategoryMapper:
         categories = self._tree["categories"]
 
         # Schritt 1: Top-Level-Kategorie
-        top_level = await self._ask_category(
-            item_description,
-            categories,
-        )
+        top_level = await self._ask_category(item_description, categories)
 
         if not top_level:
             logger.warning("Keine passende Kategorie gefunden, verwende 'Sonstiges'")
@@ -61,26 +61,25 @@ class CategoryMapper:
             )
             if sub_category:
                 path = f"{top_level['name']} > {sub_category['name']}"
-                return CategoryInfo(category_id=sub_category["id"], category_path=path)
+                return CategoryInfo(
+                    category_id=str(sub_category["id"]),
+                    category_path=path,
+                )
 
         return CategoryInfo(
-            category_id=top_level["id"],
-            category_path=top_level["name"],
+            category_id=str(top_level["id"]),
+            category_path=str(top_level["name"]),
         )
 
-    def get_all_categories(self) -> list[dict[str, object]]:
-        """Gib den gesamten Kategoriebaum zurück.
-
-        Returns:
-            Liste aller Kategorien mit Unterkategorien.
-        """
+    def get_all_categories(self) -> list[CategoryDict]:
+        """Gib den gesamten Kategoriebaum zurück."""
         return self._tree["categories"]
 
     async def _ask_category(
         self,
         item_description: str,
-        categories: list[dict[str, object]],
-    ) -> dict[str, object] | None:
+        categories: list[CategoryDict],
+    ) -> CategoryDict | None:
         """Frage die KI nach der passenden Kategorie.
 
         Args:
@@ -104,18 +103,18 @@ class CategoryMapper:
             messages=[{"role": "user", "content": prompt}],
         )
 
-        answer = response["message"]["content"].strip()
+        answer: str = response["message"]["content"].strip()
         logger.debug("Kategorie-KI-Antwort: %s", answer)
 
-        # Extrahiere die Kategorie-ID aus der Antwort
         for cat in categories:
-            if str(cat["id"]) == answer or cat["name"].lower() in answer.lower():
+            cat_name = str(cat["name"])
+            if str(cat["id"]) == answer or cat_name.lower() in answer.lower():
                 return cat
 
         return None
 
 
-def _load_category_tree() -> dict[str, list[dict[str, object]]]:
+def _load_category_tree() -> dict[str, list[CategoryDict]]:
     """Lade den Kategoriebaum aus der JSON-Datei.
 
     Returns:
@@ -125,4 +124,5 @@ def _load_category_tree() -> dict[str, list[dict[str, object]]]:
         FileNotFoundError: Wenn tree.json nicht gefunden wird.
     """
     with open(TREE_PATH, encoding="utf-8") as f:
-        return json.load(f)
+        result: dict[str, list[CategoryDict]] = json.load(f)
+        return result
