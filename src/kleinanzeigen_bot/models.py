@@ -1,13 +1,13 @@
 """Pydantic-Datenmodelle für Artikel, Preisschätzungen und Bilder."""
 
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
 
 
-class PriceType(str, Enum):
+class PriceType(StrEnum):
     """Art der Preisangabe."""
 
     FIXED = "FIXED"
@@ -15,7 +15,7 @@ class PriceType(str, Enum):
     GIVEAWAY = "GIVEAWAY"
 
 
-class ArticleStatus(str, Enum):
+class ArticleStatus(StrEnum):
     """Status eines Artikels im Workflow."""
 
     DRAFT = "DRAFT"

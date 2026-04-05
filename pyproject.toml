@@ -65,6 +65,9 @@ omit = [
     "src/kleinanzeigen_bot/browser/login.py",
     "src/kleinanzeigen_bot/browser/publisher.py",
     "src/kleinanzeigen_bot/browser/session.py",
+    "src/kleinanzeigen_bot/pricing/scraper.py",
+    "src/kleinanzeigen_bot/categories/mapper.py",
+    "src/kleinanzeigen_bot/vision/analyzer.py",
 ]
 
 [tool.coverage.report]
