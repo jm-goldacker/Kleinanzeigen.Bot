@@ -1,8 +1,8 @@
 """Playwright Browser-Session-Management."""
 
 import logging
-from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
