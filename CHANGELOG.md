@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-04-05
+
 ### Added
 - Price source overview: expandable table showing all listings used for price estimation (platform, title, price, link)
 - Option to skip price search during analysis (checkbox in upload form)
