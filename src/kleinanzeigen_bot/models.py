@@ -91,7 +91,7 @@ class VisionResult(BaseModel):
 class Article(BaseModel):
     """Ein vollständiger Artikel für Kleinanzeigen.de."""
 
-    images: list[ImageFile] = Field(min_length=1, max_length=10, description="Bilder des Artikels")
+    images: list[ImageFile] = Field(min_length=1, description="Bilder des Artikels")
     title: str = Field(max_length=70, description="Anzeigentitel")
     description: str = Field(max_length=4000, description="Anzeigenbeschreibung")
     price_cents: int = Field(ge=0, description="Preis in Cent")

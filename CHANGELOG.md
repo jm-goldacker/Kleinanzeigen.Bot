@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Coverage configuration: exclude untestable modules (browser automation, app entry point)
 
 ### Changed
+- Removed 10-image limit per article, unlimited uploads now allowed
 - Price scraper uses fallback strategy: tries all keywords first, then progressively fewer keywords until enough results are found
 
 ### Added

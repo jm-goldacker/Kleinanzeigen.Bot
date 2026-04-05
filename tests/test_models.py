@@ -165,21 +165,21 @@ class TestArticle:
                 category=CategoryInfo(category_id="1", category_path="Test"),
             )
 
-    def test_too_many_images_raises_validation_error(self, tmp_path: Path) -> None:
-        """Mehr als 10 Bilder → ValidationError."""
+    def test_many_images_accepted(self, tmp_path: Path) -> None:
+        """Mehr als 10 Bilder werden akzeptiert."""
         from PIL import Image
 
         images = []
-        for i in range(11):
+        for i in range(15):
             path = tmp_path / f"img_{i}.jpg"
             Image.new("RGB", (10, 10)).save(path)
             images.append(ImageFile(path=path))
 
-        with pytest.raises(ValidationError):
-            Article(
-                images=images,
-                title="Test",
-                description="Test",
-                price_cents=100,
-                category=CategoryInfo(category_id="1", category_path="Test"),
-            )
+        article = Article(
+            images=images,
+            title="Test",
+            description="Test",
+            price_cents=100,
+            category=CategoryInfo(category_id="1", category_path="Test"),
+        )
+        assert len(article.images) == 15

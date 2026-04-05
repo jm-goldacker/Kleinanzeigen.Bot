@@ -103,9 +103,6 @@ async def analyze_images(
     if not files:
         raise HTTPException(status_code=400, detail="Mindestens ein Bild erforderlich")
 
-    if len(files) > 10:
-        raise HTTPException(status_code=400, detail="Maximal 10 Bilder pro Artikel")
-
     settings = _get_settings()
     selected_model = model if model else settings.ollama_model
 
