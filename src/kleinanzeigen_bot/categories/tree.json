@@ -1,0 +1,158 @@
+{
+  "categories": [
+    {
+      "id": "161",
+      "name": "Elektronik",
+      "children": [
+        {
+          "id": "162",
+          "name": "Handys & Telefone",
+          "children": [
+            {"id": "173", "name": "Apple iPhone", "children": []},
+            {"id": "174", "name": "Samsung", "children": []},
+            {"id": "175", "name": "Weitere Handys & Telefone", "children": []}
+          ]
+        },
+        {
+          "id": "228",
+          "name": "Notebooks",
+          "children": [
+            {"id": "229", "name": "Apple", "children": []},
+            {"id": "230", "name": "Weitere Notebooks", "children": []}
+          ]
+        },
+        {
+          "id": "168",
+          "name": "PCs",
+          "children": [
+            {"id": "169", "name": "Apple (Desktop)", "children": []},
+            {"id": "170", "name": "Weitere PCs", "children": []}
+          ]
+        },
+        {
+          "id": "225",
+          "name": "Tablets & Reader",
+          "children": [
+            {"id": "226", "name": "Apple iPad", "children": []},
+            {"id": "227", "name": "Weitere Tablets & Reader", "children": []}
+          ]
+        },
+        {
+          "id": "178",
+          "name": "Audio & HiFi",
+          "children": []
+        },
+        {
+          "id": "176",
+          "name": "Foto",
+          "children": []
+        },
+        {
+          "id": "182",
+          "name": "TV & Video",
+          "children": []
+        },
+        {
+          "id": "186",
+          "name": "PC-Zubehör & Software",
+          "children": []
+        },
+        {
+          "id": "285",
+          "name": "Videospiele & Konsolen",
+          "children": [
+            {"id": "279", "name": "PlayStation", "children": []},
+            {"id": "280", "name": "Xbox", "children": []},
+            {"id": "281", "name": "Nintendo", "children": []},
+            {"id": "282", "name": "Weitere Konsolen", "children": []}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "86",
+      "name": "Haus & Garten",
+      "children": [
+        {"id": "87", "name": "Badezimmer", "children": []},
+        {"id": "88", "name": "Büro", "children": []},
+        {"id": "89", "name": "Dekoration", "children": []},
+        {"id": "90", "name": "Gartenzubehör & Pflanzen", "children": []},
+        {"id": "91", "name": "Heimtextilien", "children": []},
+        {"id": "92", "name": "Heimwerken", "children": []},
+        {"id": "93", "name": "Küche & Esszimmer", "children": []},
+        {"id": "94", "name": "Lampen & Licht", "children": []},
+        {"id": "95", "name": "Schlafzimmer", "children": []},
+        {"id": "96", "name": "Wohnzimmer", "children": []}
+      ]
+    },
+    {
+      "id": "132",
+      "name": "Familie, Kind & Baby",
+      "children": [
+        {"id": "133", "name": "Baby- & Kinderkleidung", "children": []},
+        {"id": "136", "name": "Baby-Ausstattung", "children": []},
+        {"id": "134", "name": "Spielzeug", "children": []},
+        {"id": "135", "name": "Kinderwagen & Buggys", "children": []}
+      ]
+    },
+    {
+      "id": "153",
+      "name": "Mode & Beauty",
+      "children": [
+        {"id": "154", "name": "Damenbekleidung", "children": []},
+        {"id": "155", "name": "Herrenbekleidung", "children": []},
+        {"id": "156", "name": "Schuhe", "children": []},
+        {"id": "157", "name": "Taschen & Accessoires", "children": []},
+        {"id": "158", "name": "Uhren & Schmuck", "children": []},
+        {"id": "159", "name": "Beauty & Gesundheit", "children": []}
+      ]
+    },
+    {
+      "id": "192",
+      "name": "Freizeit, Hobby & Nachbarschaft",
+      "children": [
+        {"id": "193", "name": "Bücher & Zeitschriften", "children": []},
+        {"id": "194", "name": "Freizeitaktivitäten", "children": []},
+        {"id": "195", "name": "Musikinstrumente", "children": []},
+        {"id": "197", "name": "Reisen", "children": []},
+        {"id": "198", "name": "Sammeln", "children": []},
+        {"id": "199", "name": "Sport & Camping", "children": []},
+        {"id": "242", "name": "Trödel", "children": []}
+      ]
+    },
+    {
+      "id": "210",
+      "name": "Auto, Rad & Boot",
+      "children": [
+        {"id": "216", "name": "Autos", "children": []},
+        {"id": "217", "name": "Autoteile & Reifen", "children": []},
+        {"id": "211", "name": "Fahrräder", "children": []},
+        {"id": "223", "name": "Motorräder & Roller", "children": []},
+        {"id": "218", "name": "Boote & Bootszubehör", "children": []}
+      ]
+    },
+    {
+      "id": "240",
+      "name": "Haustiere",
+      "children": [
+        {"id": "135", "name": "Hunde", "children": []},
+        {"id": "136", "name": "Katzen", "children": []},
+        {"id": "241", "name": "Weitere Haustiere", "children": []}
+      ]
+    },
+    {
+      "id": "320",
+      "name": "Musik, Filme & Bücher",
+      "children": [
+        {"id": "321", "name": "Bücher", "children": []},
+        {"id": "322", "name": "Filme", "children": []},
+        {"id": "323", "name": "Musik", "children": []}
+      ]
+    },
+    {
+      "id": "999",
+      "name": "Sonstiges",
+      "children": []
+    }
+  ]
+}

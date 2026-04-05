@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kleinanzeigen-Bot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Kleinanzeigen-Bot</h1>
+        <div id="health-status" class="status-indicator"></div>
+    </header>
+
+    <main>
+        <!-- Upload-Bereich -->
+        <section id="upload-section" class="card">
+            <h2>Bilder hochladen</h2>
+            <div id="drop-zone" class="drop-zone">
+                <p>Bilder hierher ziehen oder klicken zum Auswählen</p>
+                <p class="hint">Mehrere Artikel möglich: Pro Artikel ein Upload-Durchgang</p>
+                <input type="file" id="file-input" multiple accept="image/*" hidden>
+            </div>
+            <div id="image-preview" class="image-preview"></div>
+            <button id="analyze-btn" class="btn btn-primary" disabled>
+                Analysieren
+            </button>
+        </section>
+
+        <!-- Analyse-Fortschritt -->
+        <section id="progress-section" class="card" hidden>
+            <h2>Analyse läuft...</h2>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <p id="progress-text">Bilder werden von der KI analysiert...</p>
+        </section>
+
+        <!-- Artikel-Editor -->
+        <section id="articles-section" class="card" hidden>
+            <h2>Artikel bearbeiten</h2>
+            <div id="articles-list"></div>
+            <div class="actions">
+                <button id="add-more-btn" class="btn btn-secondary">
+                    + Weiteren Artikel hinzufügen
+                </button>
+                <button id="publish-all-btn" class="btn btn-primary" disabled>
+                    Alle veröffentlichen
+                </button>
+            </div>
+        </section>
+
+        <!-- Ergebnis -->
+        <section id="result-section" class="card" hidden>
+            <h2>Ergebnis</h2>
+            <div id="result-list"></div>
+            <button id="reset-btn" class="btn btn-secondary">
+                Neue Artikel erstellen
+            </button>
+        </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
