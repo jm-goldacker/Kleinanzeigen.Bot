@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- CI pipeline with GitHub Actions (lint, type check, tests on Python 3.12 & 3.13)
 - Model selection in the frontend: dropdown in the header to switch between Ollama models (e.g. qwen2.5, gemma3)
 - API endpoint `GET /api/models` to list all available Ollama models
 - Initial project structure with FastAPI backend and vanilla JS frontend
