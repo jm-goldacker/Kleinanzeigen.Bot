@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
+- AI analysis failing when the model returns more than 5 search keywords
 - Article images not displayed in the editor after AI analysis
 - Ruff linting errors: import sorting, line length violations, unused import
 - Outlier filter in price estimator not removing extreme values

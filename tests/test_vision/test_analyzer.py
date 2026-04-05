@@ -72,3 +72,15 @@ class TestParseVisionResponse:
         )
         with pytest.raises(VisionAnalysisError):
             _parse_vision_response(raw)
+
+    def test_parse_too_many_keywords_truncates_to_five(self) -> None:
+        """Mehr als 5 Keywords werden auf 5 gekürzt."""
+        raw = '''{
+            "title": "Furby Magenta",
+            "description": "Seltenes Furby Sammlerstück.",
+            "search_keywords": ["furby", "magenta", "pink", "plush", "vintage", "extra"],
+            "condition": "gut"
+        }'''
+        result = _parse_vision_response(raw)
+        assert len(result.search_keywords) == 5
+        assert result.search_keywords == ["furby", "magenta", "pink", "plush", "vintage"]

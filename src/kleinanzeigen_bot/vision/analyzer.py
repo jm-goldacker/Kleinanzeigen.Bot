@@ -133,6 +133,10 @@ def _parse_vision_response(raw: str) -> VisionResult:
             f"KI-Antwort ist kein gültiges JSON: {e}\nAntwort: {raw}"
         ) from e
 
+    # KI liefert manchmal zu viele Keywords – auf Maximum kürzen
+    if "search_keywords" in data and isinstance(data["search_keywords"], list):
+        data["search_keywords"] = data["search_keywords"][:5]
+
     try:
         return VisionResult(**data)
     except Exception as e:
