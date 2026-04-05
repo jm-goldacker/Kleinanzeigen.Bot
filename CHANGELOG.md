@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Option to skip price search during analysis (checkbox in upload form)
+- "Regenerate description" button per article in the editor (re-runs AI analysis)
+- "Refresh prices" button per article in the editor (re-runs price search)
+- API endpoints `POST /api/regenerate-description` and `POST /api/search-prices`
+
 ### Fixed
 - AI analysis failing when the model returns more than 5 search keywords
 - Article images not displayed in the editor after AI analysis

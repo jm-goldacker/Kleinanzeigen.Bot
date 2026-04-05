@@ -91,14 +91,14 @@ async def list_models() -> JSONResponse:
 async def analyze_images(
     files: list[UploadFile],
     model: str = Form(default=""),
+    skip_pricing: str = Form(default="false"),
 ) -> JSONResponse:
     """Analysiere hochgeladene Bilder mit KI.
-
-    Führt Bildanalyse, Kategorie-Mapping und Preisschätzung durch.
 
     Args:
         files: Hochgeladene Bilddateien.
         model: Optionaler Modellname (überschreibt Default aus .env).
+        skip_pricing: "true" um die Preissuche zu überspringen.
     """
     if not files:
         raise HTTPException(status_code=400, detail="Mindestens ein Bild erforderlich")
@@ -136,14 +136,28 @@ async def analyze_images(
         f"{vision_result.title} - {vision_result.description}"
     )
 
-    # 3. Preisschätzung
-    scraper = PriceScraper()
-    try:
-        price_sources = await scraper.search_prices(vision_result.search_keywords)
-    finally:
-        await scraper.close()
-
-    price_estimate = estimate_price(price_sources)
+    # 3. Preisschätzung (optional)
+    price_estimate_data = {
+        "suggested_price_cents": 0,
+        "min_price_cents": 0,
+        "max_price_cents": 0,
+        "confidence": "none",
+        "source_count": 0,
+    }
+    if skip_pricing.lower() != "true":
+        scraper = PriceScraper()
+        try:
+            price_sources = await scraper.search_prices(vision_result.search_keywords)
+        finally:
+            await scraper.close()
+        pe = estimate_price(price_sources)
+        price_estimate_data = {
+            "suggested_price_cents": pe.suggested_price_cents,
+            "min_price_cents": pe.min_price_cents,
+            "max_price_cents": pe.max_price_cents,
+            "confidence": pe.confidence,
+            "source_count": len(pe.sources),
+        }
 
     return JSONResponse({
         "upload_id": upload_id,
@@ -157,14 +171,82 @@ async def analyze_images(
             "category_id": category.category_id,
             "category_path": category.category_path,
         },
-        "price_estimate": {
-            "suggested_price_cents": price_estimate.suggested_price_cents,
-            "min_price_cents": price_estimate.min_price_cents,
-            "max_price_cents": price_estimate.max_price_cents,
-            "confidence": price_estimate.confidence,
-            "source_count": len(price_estimate.sources),
-        },
+        "price_estimate": price_estimate_data,
         "images": [f.name for f in saved_paths],
+    })
+
+
+@app.post("/api/regenerate-description")
+async def regenerate_description(data: dict) -> JSONResponse:  # type: ignore[type-arg]
+    """Generiere Beschreibung und Titel für einen bestehenden Upload neu.
+
+    Erwartet JSON mit:
+    - upload_id: ID des Uploads
+    - model: Optionaler Modellname
+    """
+    settings = _get_settings()
+    upload_id = data.get("upload_id", "")
+    upload_path = UPLOAD_DIR / upload_id
+
+    if not upload_path.exists():
+        raise HTTPException(status_code=404, detail="Upload nicht gefunden")
+
+    image_paths = sorted(upload_path.glob("*"))
+    if not image_paths:
+        raise HTTPException(status_code=404, detail="Keine Bilder im Upload gefunden")
+
+    selected_model = data.get("model", "") or settings.ollama_model
+    analyzer = VisionAnalyzer(settings.ollama_host, selected_model)
+
+    try:
+        vision_result = await analyzer.analyze_images(image_paths)
+    except VisionAnalysisError as e:
+        raise HTTPException(status_code=500, detail=f"KI-Analyse fehlgeschlagen: {e}") from e
+
+    mapper = CategoryMapper(settings.ollama_host, selected_model)
+    category = await mapper.map_category(
+        f"{vision_result.title} - {vision_result.description}"
+    )
+
+    return JSONResponse({
+        "vision": {
+            "title": vision_result.title,
+            "description": vision_result.description,
+            "search_keywords": vision_result.search_keywords,
+            "condition": vision_result.condition,
+        },
+        "category": {
+            "category_id": category.category_id,
+            "category_path": category.category_path,
+        },
+    })
+
+
+@app.post("/api/search-prices")
+async def search_prices(data: dict) -> JSONResponse:  # type: ignore[type-arg]
+    """Führe eine Preissuche für gegebene Suchbegriffe durch.
+
+    Erwartet JSON mit:
+    - keywords: Liste von Suchbegriffen
+    """
+    keywords = data.get("keywords", [])
+    if not keywords:
+        raise HTTPException(status_code=400, detail="Keine Suchbegriffe angegeben")
+
+    scraper = PriceScraper()
+    try:
+        price_sources = await scraper.search_prices(keywords)
+    finally:
+        await scraper.close()
+
+    pe = estimate_price(price_sources)
+
+    return JSONResponse({
+        "suggested_price_cents": pe.suggested_price_cents,
+        "min_price_cents": pe.min_price_cents,
+        "max_price_cents": pe.max_price_cents,
+        "confidence": pe.confidence,
+        "source_count": len(pe.sources),
     })
 
 

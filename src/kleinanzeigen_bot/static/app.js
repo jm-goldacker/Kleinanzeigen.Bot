@@ -149,6 +149,10 @@ async function analyzeImages() {
     if (modelSelect.value) {
         formData.append("model", modelSelect.value);
     }
+    const skipPricing = document.getElementById("skip-pricing").checked;
+    if (skipPricing) {
+        formData.append("skip_pricing", "true");
+    }
 
     try {
         progressFill.style.width = "40%";
@@ -259,9 +263,17 @@ function renderArticles() {
                        value="${escapeHtml(article.category.category_path)}"
                        data-index="${index}">
             </div>
-            <button class="btn btn-secondary" onclick="removeArticle(${index})" style="margin-top:8px">
-                Artikel entfernen
-            </button>
+            <div class="article-actions">
+                <button class="btn-small" onclick="regenerateDescription(${index})">
+                    Beschreibung neu generieren
+                </button>
+                <button class="btn-small" onclick="refreshPrices(${index})">
+                    Preise aktualisieren
+                </button>
+                <button class="btn-small" onclick="removeArticle(${index})" style="color: var(--color-error)">
+                    Artikel entfernen
+                </button>
+            </div>
         `;
         articlesList.appendChild(card);
     });
@@ -298,6 +310,69 @@ function removeArticle(index) {
     state.articles.splice(index, 1);
     renderArticles();
     publishAllBtn.disabled = state.articles.length === 0;
+}
+
+async function regenerateDescription(index) {
+    const article = state.articles[index];
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = "Generiere...";
+
+    try {
+        const res = await fetch("/api/regenerate-description", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                upload_id: article.upload_id,
+                model: modelSelect.value,
+            }),
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || "Neugenerierung fehlgeschlagen");
+        }
+
+        const data = await res.json();
+        article.vision = data.vision;
+        article.category = data.category;
+        renderArticles();
+    } catch (err) {
+        alert(`Fehler: ${err.message}`);
+        btn.disabled = false;
+        btn.textContent = "Beschreibung neu generieren";
+    }
+}
+
+async function refreshPrices(index) {
+    const article = state.articles[index];
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = "Suche...";
+
+    try {
+        const res = await fetch("/api/search-prices", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                keywords: article.vision.search_keywords,
+            }),
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || "Preissuche fehlgeschlagen");
+        }
+
+        const data = await res.json();
+        article.price_estimate = data;
+        article.price_cents = data.suggested_price_cents;
+        renderArticles();
+    } catch (err) {
+        alert(`Fehler: ${err.message}`);
+        btn.disabled = false;
+        btn.textContent = "Preise aktualisieren";
+    }
 }
 
 function addMoreArticles() {

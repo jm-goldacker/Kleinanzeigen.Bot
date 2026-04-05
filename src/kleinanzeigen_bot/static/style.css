@@ -274,6 +274,48 @@ header h1 {
     border-radius: 4px;
 }
 
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.article-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.btn-small {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-card);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-small:hover:not(:disabled) {
+    background: var(--color-bg);
+}
+
+.btn-small:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .actions {
     display: flex;
     gap: 12px;
