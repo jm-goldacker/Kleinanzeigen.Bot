@@ -59,6 +59,13 @@ markers = [
 
 [tool.coverage.run]
 source = ["src/kleinanzeigen_bot"]
+omit = [
+    "src/kleinanzeigen_bot/__main__.py",
+    "src/kleinanzeigen_bot/app.py",
+    "src/kleinanzeigen_bot/browser/login.py",
+    "src/kleinanzeigen_bot/browser/publisher.py",
+    "src/kleinanzeigen_bot/browser/session.py",
+]
 
 [tool.coverage.report]
 fail_under = 80

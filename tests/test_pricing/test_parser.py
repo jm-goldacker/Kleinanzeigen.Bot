@@ -2,7 +2,11 @@
 
 import pytest
 
-from kleinanzeigen_bot.pricing.parser import _parse_price_text, parse_kleinanzeigen_results, parse_ebay_results
+from kleinanzeigen_bot.pricing.parser import (
+    _parse_price_text,
+    parse_ebay_results,
+    parse_kleinanzeigen_results,
+)
 
 
 class TestParsePrice:

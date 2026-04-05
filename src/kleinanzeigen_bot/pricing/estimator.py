@@ -105,7 +105,10 @@ def _filter_outliers(prices: list[int]) -> list[int]:
 
     sorted_prices = sorted(prices)
     low_idx = max(0, int(len(sorted_prices) * PERCENTILE_LOW / 100))
-    high_idx = min(len(sorted_prices) - 1, int(len(sorted_prices) * PERCENTILE_HIGH / 100))
+    high_idx = min(
+        len(sorted_prices) - 1,
+        int(len(sorted_prices) * PERCENTILE_HIGH / 100) - 1,
+    )
 
     low_threshold = sorted_prices[low_idx]
     high_threshold = sorted_prices[high_idx]

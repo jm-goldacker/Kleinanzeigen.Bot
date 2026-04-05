@@ -64,7 +64,11 @@ class TestParseVisionResponse:
             _parse_vision_response(raw)
 
     def test_parse_title_too_long_raises_vision_analysis_error(self) -> None:
-        """Titel über 70 Zeichen → VisionAnalysisError."""
-        raw = f'''{{"title": "{'A' * 71}", "description": "Test", "search_keywords": ["test"], "condition": "gut"}}'''
+        """Titel über 70 Zeichen -> VisionAnalysisError."""
+        title = "A" * 71
+        raw = (
+            f'{{"title": "{title}", "description": "Test", '
+            f'"search_keywords": ["test"], "condition": "gut"}}'
+        )
         with pytest.raises(VisionAnalysisError):
             _parse_vision_response(raw)

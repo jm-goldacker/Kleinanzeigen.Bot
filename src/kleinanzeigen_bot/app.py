@@ -9,21 +9,20 @@ from fastapi import FastAPI, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from kleinanzeigen_bot.browser.login import login, LoginError
-from kleinanzeigen_bot.browser.publisher import publish_article, PublishError
+from kleinanzeigen_bot.browser.login import LoginError, login
+from kleinanzeigen_bot.browser.publisher import PublishError, publish_article
 from kleinanzeigen_bot.browser.session import create_browser_session
 from kleinanzeigen_bot.categories.mapper import CategoryMapper
 from kleinanzeigen_bot.config import Settings, load_settings
 from kleinanzeigen_bot.models import (
     Article,
-    ArticleStatus,
     CategoryInfo,
     ImageFile,
     PriceType,
 )
 from kleinanzeigen_bot.pricing.estimator import estimate_price
 from kleinanzeigen_bot.pricing.scraper import PriceScraper
-from kleinanzeigen_bot.vision.analyzer import VisionAnalyzer, VisionAnalysisError
+from kleinanzeigen_bot.vision.analyzer import VisionAnalysisError, VisionAnalyzer
 
 logger = logging.getLogger(__name__)
 
