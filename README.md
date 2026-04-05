@@ -66,7 +66,11 @@ LOCATION_CITY=Berlin
 
 ## Usage
 
-### Start the app
+### Option A: Download the executable
+
+Download the latest release for your platform from the [Releases](https://github.com/jm-goldacker/Kleinanzeigen.Bot/releases) page. Place a `.env` file next to the executable and run it. The app opens automatically in your browser.
+
+### Option B: Run from source
 
 ```bash
 python -m kleinanzeigen_bot

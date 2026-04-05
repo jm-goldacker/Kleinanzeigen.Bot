@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Standalone executables for Windows, macOS, and Linux via PyInstaller
+- GitHub Actions release workflow: creates downloadable binaries on each tag
+- Auto-opens browser when starting the app
+
 ## [0.1.0] - 2026-04-05
 
 ### Added

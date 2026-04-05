@@ -2,6 +2,8 @@
 
 import logging
 import sys
+import webbrowser
+from threading import Timer
 
 import uvicorn
 
@@ -12,6 +14,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+HOST = "127.0.0.1"
+PORT = 8000
+
 
 def main() -> None:
     """Starte den FastAPI-Webserver."""
@@ -19,6 +24,7 @@ def main() -> None:
 
     try:
         from kleinanzeigen_bot.config import load_settings
+
         load_settings()
         logger.info("Konfiguration geladen")
     except Exception as e:
@@ -26,12 +32,12 @@ def main() -> None:
         logger.error("Bitte .env-Datei erstellen (siehe .env.example)")
         sys.exit(1)
 
-    uvicorn.run(
-        "kleinanzeigen_bot.app:app",
-        host="127.0.0.1",
-        port=8000,
-        reload=False,
-    )
+    # Browser nach kurzem Delay öffnen
+    Timer(1.5, lambda: webbrowser.open(f"http://{HOST}:{PORT}")).start()
+
+    from kleinanzeigen_bot.app import app
+
+    uvicorn.run(app, host=HOST, port=PORT)
 
 
 if __name__ == "__main__":

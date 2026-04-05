@@ -9,6 +9,7 @@ from fastapi import FastAPI, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from kleinanzeigen_bot import get_base_path
 from kleinanzeigen_bot.browser.login import LoginError, login
 from kleinanzeigen_bot.browser.publisher import PublishError, publish_article
 from kleinanzeigen_bot.browser.session import create_browser_session
@@ -26,7 +27,7 @@ from kleinanzeigen_bot.vision.analyzer import VisionAnalysisError, VisionAnalyze
 
 logger = logging.getLogger(__name__)
 
-STATIC_DIR = Path(__file__).parent / "static"
+STATIC_DIR = get_base_path() / "static"
 UPLOAD_DIR = Path(tempfile.gettempdir()) / "kleinanzeigen-bot-uploads"
 
 app = FastAPI(title="Kleinanzeigen-Bot", version="0.1.0")

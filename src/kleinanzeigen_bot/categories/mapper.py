@@ -7,12 +7,13 @@ from typing import Any
 
 from ollama import AsyncClient
 
+from kleinanzeigen_bot import get_base_path
 from kleinanzeigen_bot.models import CategoryInfo
 from kleinanzeigen_bot.vision.prompts import CATEGORIZE_PROMPT_TEMPLATE
 
 logger = logging.getLogger(__name__)
 
-TREE_PATH = Path(__file__).parent / "tree.json"
+TREE_PATH = get_base_path() / "categories" / "tree.json"
 
 CategoryDict = dict[str, Any]
 
