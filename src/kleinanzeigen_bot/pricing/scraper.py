@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import random
+from itertools import combinations
 
 import httpx
 
@@ -21,15 +22,48 @@ USER_AGENTS = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     ),
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
+    (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) "
+        "Gecko/20100101 Firefox/133.0"
+    ),
     (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
     ),
 ]
 
 REQUEST_DELAY_MIN = 1.0
 REQUEST_DELAY_MAX = 3.0
+MIN_RESULTS_THRESHOLD = 3
+
+
+def build_query_variants(keywords: list[str]) -> list[str]:
+    """Erzeuge Suchvarianten mit abnehmender Spezifität.
+
+    Beginnt mit allen Keywords, dann Kombinationen mit einem
+    Keyword weniger, bis hin zu einzelnen Keywords.
+
+    Args:
+        keywords: Liste von Suchbegriffen.
+
+    Returns:
+        Liste von Suchstrings, spezifischste zuerst.
+    """
+    if not keywords:
+        return []
+
+    variants: list[str] = []
+    seen: set[str] = set()
+
+    for length in range(len(keywords), 0, -1):
+        for combo in combinations(keywords, length):
+            query = " ".join(combo)
+            if query not in seen:
+                seen.add(query)
+                variants.append(query)
+
+    return variants
 
 
 class PriceScraper:
@@ -48,7 +82,10 @@ class PriceScraper:
         await self._client.aclose()
 
     async def search_prices(self, keywords: list[str]) -> list[PriceSource]:
-        """Suche Preise auf Kleinanzeigen.de und eBay für gegebene Suchbegriffe.
+        """Suche Preise mit Fallback auf weniger spezifische Suchanfragen.
+
+        Versucht zuerst alle Keywords zusammen. Falls zu wenige Ergebnisse
+        gefunden werden, wird mit weniger Keywords erneut gesucht.
 
         Args:
             keywords: Liste von Suchbegriffen.
@@ -56,25 +93,55 @@ class PriceScraper:
         Returns:
             Kombinierte Liste aller gefundenen Preise.
         """
-        query = " ".join(keywords)
-        logger.info("Starte Preisrecherche für: '%s'", query)
+        variants = build_query_variants(keywords)
+        all_prices: list[PriceSource] = []
+        tried_queries: list[str] = []
 
-        kleinanzeigen_task = self._search_kleinanzeigen(query)
-        ebay_task = self._search_ebay(query)
+        for query in variants:
+            logger.info("Preisrecherche für: '%s'", query)
+            tried_queries.append(query)
 
+            prices = await self._search_both_platforms(query)
+            all_prices.extend(prices)
+
+            if len(all_prices) >= MIN_RESULTS_THRESHOLD:
+                logger.info(
+                    "%d Preise nach %d Suchanfrage(n) gefunden",
+                    len(all_prices),
+                    len(tried_queries),
+                )
+                return all_prices
+
+        logger.info(
+            "%d Preise nach allen %d Suchanfragen gefunden",
+            len(all_prices),
+            len(tried_queries),
+        )
+        return all_prices
+
+    async def _search_both_platforms(self, query: str) -> list[PriceSource]:
+        """Suche parallel auf Kleinanzeigen.de und eBay.
+
+        Args:
+            query: Suchbegriff.
+
+        Returns:
+            Kombinierte Ergebnisse beider Plattformen.
+        """
         results = await asyncio.gather(
-            kleinanzeigen_task, ebay_task, return_exceptions=True
+            self._search_kleinanzeigen(query),
+            self._search_ebay(query),
+            return_exceptions=True,
         )
 
-        all_prices: list[PriceSource] = []
+        prices: list[PriceSource] = []
         for result in results:
             if isinstance(result, Exception):
                 logger.warning("Scraping-Fehler: %s", result)
             else:
-                all_prices.extend(result)
+                prices.extend(result)
 
-        logger.info("Insgesamt %d Preise gefunden", len(all_prices))
-        return all_prices
+        return prices
 
     async def _search_kleinanzeigen(self, query: str) -> list[PriceSource]:
         """Suche auf Kleinanzeigen.de."""

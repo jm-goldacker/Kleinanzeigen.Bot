@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Outlier filter in price estimator not removing extreme values
 - Coverage configuration: exclude untestable modules (browser automation, app entry point)
 
+### Changed
+- Price scraper uses fallback strategy: tries all keywords first, then progressively fewer keywords until enough results are found
+
 ### Added
 - CI pipeline with GitHub Actions (lint, type check, tests on Python 3.12 & 3.13)
 - Model selection in the frontend: dropdown in the header to switch between Ollama models (e.g. qwen2.5, gemma3)
