@@ -8,6 +8,8 @@ und folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- Modellauswahl im Frontend: Dropdown im Header zum Wechseln zwischen Ollama-Modellen (z.B. qwen2.5, gemma3)
+- API-Endpunkt `GET /api/models` zum Auflisten aller verfügbaren Ollama-Modelle
 - Initiale Projektstruktur mit FastAPI-Backend und Vanilla-JS-Frontend
 - KI-Bildanalyse mit Ollama Vision-Modell (LLaVA)
 - Automatische Preisschätzung durch Scraping von Kleinanzeigen.de und eBay

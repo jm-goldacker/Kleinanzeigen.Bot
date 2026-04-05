@@ -5,7 +5,7 @@ import tempfile
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi import FastAPI, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -67,11 +67,30 @@ async def health_check() -> JSONResponse:
     })
 
 
+@app.get("/api/models")
+async def list_models() -> JSONResponse:
+    """Liste alle verfügbaren Ollama-Modelle auf."""
+    settings = _get_settings()
+    analyzer = VisionAnalyzer(settings.ollama_host, settings.ollama_model)
+    models = await analyzer.list_models()
+    return JSONResponse({
+        "models": models,
+        "default": settings.ollama_model,
+    })
+
+
 @app.post("/api/analyze")
-async def analyze_images(files: list[UploadFile]) -> JSONResponse:
+async def analyze_images(
+    files: list[UploadFile],
+    model: str = Form(default=""),
+) -> JSONResponse:
     """Analysiere hochgeladene Bilder mit KI.
 
     Führt Bildanalyse, Kategorie-Mapping und Preisschätzung durch.
+
+    Args:
+        files: Hochgeladene Bilddateien.
+        model: Optionaler Modellname (überschreibt Default aus .env).
     """
     if not files:
         raise HTTPException(status_code=400, detail="Mindestens ein Bild erforderlich")
@@ -80,6 +99,7 @@ async def analyze_images(files: list[UploadFile]) -> JSONResponse:
         raise HTTPException(status_code=400, detail="Maximal 10 Bilder pro Artikel")
 
     settings = _get_settings()
+    selected_model = model if model else settings.ollama_model
 
     # Bilder temporär speichern
     upload_id = str(uuid.uuid4())
@@ -99,14 +119,14 @@ async def analyze_images(files: list[UploadFile]) -> JSONResponse:
         raise HTTPException(status_code=400, detail="Keine gültigen Bilder hochgeladen")
 
     # 1. Vision-Analyse
-    analyzer = VisionAnalyzer(settings.ollama_host, settings.ollama_model)
+    analyzer = VisionAnalyzer(settings.ollama_host, selected_model)
     try:
         vision_result = await analyzer.analyze_images(saved_paths)
     except VisionAnalysisError as e:
         raise HTTPException(status_code=500, detail=f"KI-Analyse fehlgeschlagen: {e}") from e
 
     # 2. Kategorie-Mapping
-    mapper = CategoryMapper(settings.ollama_host, settings.ollama_model)
+    mapper = CategoryMapper(settings.ollama_host, selected_model)
     category = await mapper.map_category(
         f"{vision_result.title} - {vision_result.description}"
     )

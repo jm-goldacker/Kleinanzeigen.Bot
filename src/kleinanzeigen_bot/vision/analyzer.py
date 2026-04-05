@@ -83,6 +83,19 @@ class VisionAnalyzer:
             logger.exception("Ollama nicht erreichbar unter Host")
             return False
 
+    async def list_models(self) -> list[str]:
+        """Liste alle verfügbaren Ollama-Modelle auf.
+
+        Returns:
+            Liste von Modellnamen.
+        """
+        try:
+            models = await self._client.list()
+            return [m["model"] for m in models.get("models", [])]
+        except Exception:
+            logger.exception("Ollama nicht erreichbar")
+            return []
+
 
 class VisionAnalysisError(Exception):
     """Fehler bei der KI-Bildanalyse."""

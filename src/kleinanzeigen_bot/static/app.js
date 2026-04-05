@@ -25,10 +25,12 @@ const resultSection = document.getElementById("result-section");
 const resultList = document.getElementById("result-list");
 const resetBtn = document.getElementById("reset-btn");
 const healthStatus = document.getElementById("health-status");
+const modelSelect = document.getElementById("model-select");
 
 // -- Initialisierung --
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadModels();
     checkHealth();
     setupDropZone();
     setupButtons();
@@ -50,6 +52,33 @@ async function checkHealth() {
     } catch {
         healthStatus.textContent = "Server nicht erreichbar";
         healthStatus.className = "status-indicator status-error";
+    }
+}
+
+// -- Modelle laden --
+
+async function loadModels() {
+    try {
+        const res = await fetch("/api/models");
+        const data = await res.json();
+        modelSelect.innerHTML = "";
+
+        if (data.models.length === 0) {
+            modelSelect.innerHTML = '<option value="">Keine Modelle verfügbar</option>';
+            return;
+        }
+
+        for (const model of data.models) {
+            const option = document.createElement("option");
+            option.value = model;
+            option.textContent = model;
+            if (model === data.default || model.startsWith(data.default)) {
+                option.selected = true;
+            }
+            modelSelect.appendChild(option);
+        }
+    } catch {
+        modelSelect.innerHTML = '<option value="">Fehler beim Laden</option>';
     }
 }
 
@@ -116,6 +145,9 @@ async function analyzeImages() {
     const formData = new FormData();
     for (const file of state.currentFiles) {
         formData.append("files", file);
+    }
+    if (modelSelect.value) {
+        formData.append("model", modelSelect.value);
     }
 
     try {
