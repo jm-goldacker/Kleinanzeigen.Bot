@@ -51,3 +51,5 @@ uploads/
 
 # Claude
 .claude/plans/
+CLAUDE.md
+PROMPT_LOG.md

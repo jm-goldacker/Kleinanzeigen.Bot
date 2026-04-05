@@ -1,126 +1,126 @@
 # Kleinanzeigen-Bot
 
-KI-gestützter Bot zum automatischen Erstellen von Kleinanzeigen. Bilder hochladen, KI erkennt den Gegenstand, schätzt den Preis und veröffentlicht die Anzeige auf Kleinanzeigen.de.
+AI-powered bot for automatically creating classified ads. Upload photos, let the AI identify the item, estimate the price, and publish the listing on Kleinanzeigen.de.
 
 ## Features
 
-- **KI-Bilderkennung**: Lokale Bildanalyse mit Ollama (LLaVA) – keine Cloud, keine Kosten
-- **Automatische Preisschätzung**: Basierend auf aktuellen Angeboten von Kleinanzeigen.de und eBay
-- **Kategorie-Vorschlag**: KI schlägt passende Kleinanzeigen-Kategorie vor
-- **Batch-Verarbeitung**: Mehrere Artikel auf einmal verarbeiten
-- **Bearbeitung vor Upload**: Titel, Beschreibung, Preis und Kategorie vor Veröffentlichung anpassen
-- **Browser-Automatisierung**: Anzeigen werden automatisch über Playwright eingestellt
+- **AI Image Recognition**: Local image analysis with Ollama (LLaVA) – no cloud, no costs
+- **Automatic Price Estimation**: Based on current listings from Kleinanzeigen.de and eBay
+- **Category Suggestion**: AI suggests a matching Kleinanzeigen category
+- **Batch Processing**: Process multiple items at once
+- **Edit Before Publishing**: Adjust title, description, price, and category before publishing
+- **Browser Automation**: Listings are automatically created via Playwright
 
-## Voraussetzungen
+## Prerequisites
 
 - Python 3.12+
-- [Ollama](https://ollama.com/) mit einem Vision-Modell (z.B. `llava`)
-- Google Chrome (für Browser-Automatisierung)
+- [Ollama](https://ollama.com/) with a vision model (e.g. `llava`)
+- Google Chrome (for browser automation)
 
 ## Setup
 
-### 1. Ollama installieren und Modell herunterladen
+### 1. Install Ollama and download a model
 
 ```bash
-# Ollama installieren: https://ollama.com/download
-# Vision-Modell herunterladen:
+# Install Ollama: https://ollama.com/download
+# Download a vision model:
 ollama pull llava
 ```
 
-### 2. Projekt einrichten
+### 2. Set up the project
 
 ```bash
-# Repository klonen
+# Clone the repository
 git clone <repo-url>
 cd kleinanzeigen-bot
 
-# Virtuelle Umgebung erstellen
+# Create a virtual environment
 python -m venv .venv
 .venv\Scripts\activate  # Windows
 # source .venv/bin/activate  # Linux/Mac
 
-# Abhängigkeiten installieren
+# Install dependencies
 pip install -e ".[dev]"
 
-# Playwright-Browser installieren
+# Install Playwright browsers
 playwright install chromium
 ```
 
-### 3. Konfiguration
+### 3. Configuration
 
 ```bash
-# .env-Datei aus Vorlage erstellen
+# Create .env file from template
 cp .env.example .env
 ```
 
-`.env` bearbeiten und Zugangsdaten eintragen:
+Edit `.env` and enter your credentials:
 
 ```env
-KLEINANZEIGEN_EMAIL=deine-email@example.com
-KLEINANZEIGEN_PASSWORD=dein-passwort
+KLEINANZEIGEN_EMAIL=your-email@example.com
+KLEINANZEIGEN_PASSWORD=your-password
 OLLAMA_HOST=http://localhost:11434
 OLLAMA_MODEL=llava
 LOCATION_ZIP=12345
 LOCATION_CITY=Berlin
 ```
 
-## Verwendung
+## Usage
 
-### App starten
+### Start the app
 
 ```bash
 python -m kleinanzeigen_bot
 ```
 
-Die Web-App ist dann unter `http://127.0.0.1:8000` erreichbar.
+The web app is then available at `http://127.0.0.1:8000`.
 
 ### Workflow
 
-1. **Bilder hochladen**: Bilder per Drag & Drop oder Dateiauswahl hochladen
-2. **KI-Analyse**: Die KI erkennt den Gegenstand, erstellt Titel und Beschreibung
-3. **Preis prüfen**: Preisvorschlag basierend auf Marktdaten prüfen/anpassen
-4. **Bearbeiten**: Alle Felder können vor der Veröffentlichung bearbeitet werden
-5. **Veröffentlichen**: Anzeige wird automatisch auf Kleinanzeigen.de eingestellt
+1. **Upload images**: Upload images via drag & drop or file selection
+2. **AI analysis**: The AI identifies the item, creates a title and description
+3. **Review price**: Review and adjust the price suggestion based on market data
+4. **Edit**: All fields can be edited before publishing
+5. **Publish**: The listing is automatically created on Kleinanzeigen.de
 
-## Konfiguration
+## Configuration
 
-| Variable | Beschreibung | Default |
+| Variable | Description | Default |
 |---|---|---|
-| `KLEINANZEIGEN_EMAIL` | E-Mail für Kleinanzeigen.de | *Pflicht* |
-| `KLEINANZEIGEN_PASSWORD` | Passwort für Kleinanzeigen.de | *Pflicht* |
-| `OLLAMA_HOST` | Ollama API-Adresse | `http://localhost:11434` |
-| `OLLAMA_MODEL` | Vision-Modell | `llava` |
-| `BROWSER_HEADLESS` | Browser ohne Fenster | `true` |
-| `BROWSER_SLOW_MO` | Verzögerung in ms | `100` |
-| `LOCATION_ZIP` | PLZ für Anzeigen | – |
-| `LOCATION_CITY` | Stadt für Anzeigen | – |
+| `KLEINANZEIGEN_EMAIL` | Email for Kleinanzeigen.de | *Required* |
+| `KLEINANZEIGEN_PASSWORD` | Password for Kleinanzeigen.de | *Required* |
+| `OLLAMA_HOST` | Ollama API address | `http://localhost:11434` |
+| `OLLAMA_MODEL` | Vision model | `llava` |
+| `BROWSER_HEADLESS` | Run browser without window | `true` |
+| `BROWSER_SLOW_MO` | Delay in ms | `100` |
+| `LOCATION_ZIP` | Zip code for listings | – |
+| `LOCATION_CITY` | City for listings | – |
 
-## Entwicklung
+## Development
 
 ```bash
-# Tests ausführen
+# Run tests
 pytest
 
-# Tests mit Coverage
+# Run tests with coverage
 pytest --cov
 
 # Linting
 ruff check src/ tests/
 
-# Typ-Prüfung
+# Type checking
 mypy src/
 ```
 
-## Projektstruktur
+## Project Structure
 
 ```
 src/kleinanzeigen_bot/
-├── app.py              # FastAPI Web-App
-├── config.py           # Konfiguration (.env)
-├── models.py           # Datenmodelle
-├── vision/             # KI-Bildanalyse (Ollama)
-├── pricing/            # Preisschätzung (Scraping)
-├── categories/         # Kategorie-Mapping
-├── browser/            # Browser-Automatisierung (Playwright)
-└── static/             # Web-Frontend (HTML/CSS/JS)
+├── app.py              # FastAPI web app
+├── config.py           # Configuration (.env)
+├── models.py           # Data models
+├── vision/             # AI image analysis (Ollama)
+├── pricing/            # Price estimation (scraping)
+├── categories/         # Category mapping
+├── browser/            # Browser automation (Playwright)
+└── static/             # Web frontend (HTML/CSS/JS)
 ```

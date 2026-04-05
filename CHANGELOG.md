@@ -1,22 +1,22 @@
 # Changelog
 
-Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
+All notable changes to this project will be documented in this file.
 
-Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/)
-und folgt [Semantic Versioning](https://semver.org/lang/de/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
 ### Added
-- Modellauswahl im Frontend: Dropdown im Header zum Wechseln zwischen Ollama-Modellen (z.B. qwen2.5, gemma3)
-- API-Endpunkt `GET /api/models` zum Auflisten aller verfügbaren Ollama-Modelle
-- Initiale Projektstruktur mit FastAPI-Backend und Vanilla-JS-Frontend
-- KI-Bildanalyse mit Ollama Vision-Modell (LLaVA)
-- Automatische Preisschätzung durch Scraping von Kleinanzeigen.de und eBay
-- Kategorie-Mapping mit KI-gestütztem Fuzzy-Matching
-- Browser-Automatisierung mit Playwright für Kleinanzeigen.de
-- Web-UI mit Drag & Drop Bild-Upload
-- Batch-Verarbeitung für mehrere Artikel
-- Artikel-Editor zum Bearbeiten vor Veröffentlichung
-- Konfiguration über .env-Datei (pydantic-settings)
-- Unit-Tests für Models, Config, Parser und Estimator
+- Model selection in the frontend: dropdown in the header to switch between Ollama models (e.g. qwen2.5, gemma3)
+- API endpoint `GET /api/models` to list all available Ollama models
+- Initial project structure with FastAPI backend and vanilla JS frontend
+- AI image analysis with Ollama vision model (LLaVA)
+- Automatic price estimation by scraping Kleinanzeigen.de and eBay
+- Category mapping with AI-powered fuzzy matching
+- Browser automation with Playwright for Kleinanzeigen.de
+- Web UI with drag & drop image upload
+- Batch processing for multiple items
+- Article editor for reviewing before publishing
+- Configuration via .env file (pydantic-settings)
+- Unit tests for models, config, parser, and estimator
